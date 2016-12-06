@@ -8,16 +8,17 @@
 
 ### algorithm
 * train model
-* save model
+* save model or just dump result
 
 ### service
 * load model or/and using dataset
-* predict, recommend, or serve funstion
+* predict, recommend, or serve function
 
 ### engine
 * coordinate dataset, algorithm and service
 * build new service by changing dataset, algorithm
 * support luigi or any scheduler in the future
+* https://github.com/spotify/luigi
 
 ## Example
 * required pyspark (1.6 or 2.0)
