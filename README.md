@@ -27,7 +27,14 @@
 ## Example
 * required pyspark (1.6 or 2.0)
 ```
-export PYTHONPATH=$SPARK_HOME/python/:$PYTHONPATH
-export PYTHONPATH=$SPARK_HOME/python/lib/py4j-0.xx.x-src.zip:$PYTHONPATH
+  export PYTHONPATH=$SPARK_HOME/python/:$PYTHONPATH
+  export PYTHONPATH=$SPARK_HOME/python/lib/py4j-0.xx.x-src.zip:$PYTHONPATH
 ```
-* python test.py
+*  Start global server on port 5003
+```
+  python app.py
+```
+* Start microservice on port 5003 (only movie service)
+```
+  python movie_len_recommender/serving.py
+```
