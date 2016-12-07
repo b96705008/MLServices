@@ -10,7 +10,7 @@
 * train model
 * save model or just dump result
 
-### service
+### model
 * load model or/and using dataset
 * predict, recommend, or serve function
 
@@ -19,6 +19,10 @@
 * build new service by changing dataset, algorithm
 * support luigi or any scheduler in the future
 * https://github.com/spotify/luigi
+
+### serving
+* Flask API route
+* Can be merge to app.py (global) or microservice
 
 ## Example
 * required pyspark (1.6 or 2.0)

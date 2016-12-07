@@ -25,7 +25,7 @@ def get_service(engine):
     def top_ratings(user_id, count):
         logger.debug("User %s TOP ratings requested", user_id)
         model = engine.get_model()
-        top_ratings = model.get_top_ratings(user_id, count) #recommendation_engine.get_top_ratings(user_id,count)
+        top_ratings = model.get_top_ratings(user_id, count)
         return nice_json(top_ratings)
 
 
