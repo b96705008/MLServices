@@ -1,6 +1,7 @@
+import copy
 from dataset import MovieLenDataset
 from algorithm import MovieALS
-from service import MovieCFService
+from model import MovieCFModel
 
 # Maybe use luigi
 class MovieRCEngine:
@@ -8,25 +9,19 @@ class MovieRCEngine:
         self.sc = sc
         self.dataset_path = dataset_path
         self.model_path = model_path
-        self.refresh_dataset()
+        self.refresh_all()
         ### some refresh scheduler
-        # self.refresh_dataset()
-        # self.refresh_service()
 
     def refresh_dataset(self, new_dataset=None):
+        print("refresh dataset ...")
         # dataset
         if new_dataset is None:
             self.dataset = MovieLenDataset(self.sc, self.dataset_path)
         else:
             self.dataset = new_dataset
 
-    def add_ratings(self, ratings):
-        print('add ratings ...')
-        self.dataset.add_ratings(ratings)
-
-    def build_service(self):
-        print("refresh service ...")
-        print("rating count: " + str(self.dataset.ratings_RDD.count()))
+    def refresh_model(self):
+        print("refresh model ...")
 
         # algorithm
         movie_rc_algo = MovieALS(self.sc, self.dataset, {
@@ -40,4 +35,18 @@ class MovieRCEngine:
         movie_rc_algo.save_model()
 
         # service
-        return MovieCFService(self.sc, self.model_path, self.dataset)
+        self.model = MovieCFModel(self.sc, self.model_path, self.dataset)
+
+    def refresh_all(self):
+        self.refresh_dataset()
+        self.refresh_model()
+
+    def add_ratings(self, ratings, refresh=False):
+        print('add ratings ...')
+        self.dataset.add_ratings(ratings)
+        if refresh:
+            self.refresh_model()
+
+    def get_model(self):
+        #return copy.copy(self.model)
+        return self.model

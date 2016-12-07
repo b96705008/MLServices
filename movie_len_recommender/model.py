@@ -1,11 +1,13 @@
 import os
+import uuid
 from pyspark.mllib.recommendation import MatrixFactorizationModel
 import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-class MovieCFService:
+class MovieCFModel:
     def __init__(self, sc, model_path, dataset):
+        self._id = str(uuid.uuid1())
         self.sc = sc
         self.model_path = model_path
         self.dataset = dataset
@@ -38,4 +40,6 @@ class MovieCFService:
             .filter(lambda r: r[2] >= 25) \
             .takeOrdered(movies_count, key=lambda x: -x[1])
 
-        return ratings
+        result = map(lambda x: {'movie_title': x[0], 'rating': x[1], 'count': x[2]}, ratings)
+
+        return result
