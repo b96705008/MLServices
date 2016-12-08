@@ -9,7 +9,6 @@ class MovieRCEngine:
         self.sc = sc
         self.dataset_path = dataset_path
         self.model_path = model_path
-        self.refresh_all()
         ### some refresh scheduler
 
     def refresh_dataset(self, new_dataset=None):
@@ -37,9 +36,13 @@ class MovieRCEngine:
         # service
         self.model = MovieCFModel(self.sc, self.model_path, self.dataset)
 
-    def refresh_all(self):
+    def refresh(self, train=True):
+        print("refresh...")
         self.refresh_dataset()
-        self.refresh_model()
+        if train:
+            self.refresh_model()
+        else:
+            self.model = MovieCFModel(self.sc, self.model_path, self.dataset)
 
     def add_ratings(self, ratings, refresh=False):
         print('add ratings ...')

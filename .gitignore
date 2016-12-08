@@ -99,3 +99,4 @@ models
 spark-warehouse
 derby.log
 metadata
+.DS_Store

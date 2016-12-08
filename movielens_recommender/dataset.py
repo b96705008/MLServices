@@ -21,6 +21,7 @@ class MovieLenDataset:
         # self.movies_rating_counts_RDD
 
     def prepare_data(self):
+        logger.info("Prepare MovieLens data...")
         self.__load_ratings(self.dataset_path)
         self.__load_movies(self.dataset_path)
         self.__count_and_average_ratings()

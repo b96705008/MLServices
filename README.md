@@ -25,16 +25,31 @@
 * Can be merge to app.py (global) or microservice
 
 ## Example
-* required pyspark (1.6 or 2.0)
-```
-  export PYTHONPATH=$SPARK_HOME/python/:$PYTHONPATH
-  export PYTHONPATH=$SPARK_HOME/python/lib/py4j-0.xx.x-src.zip:$PYTHONPATH
-```
-*  Start global server on port 5003
+### Required
+* pyspark (1.6 or 2.0)
+* keras
+
+### Services
+* MoviesLens recommender
+* Iris classifier
+
+### Run Global
+*  Start server on port 8000
 ```
   python app.py
 ```
-* Start microservice on port 5003 (only movie service)
+* Routes
+1. http://localhost:8000/iris/features/2,3,4,1/class
+2. http://localhost:8000/iris/features/2,3,4,1/probs
+3. http://localhost:8000/movielens/users/1/top/10
+
+### Microservice
+* Start movielens service on port 5003, iris service on port 5001
 ```
-  python movie_len_recommender/serving.py
+  python movielens_recommender/serving.py
+  python iris_classifier/serving.py
 ```
+* Routes
+1. http://localhost:5001/features/2,3,4,1/class
+2. http://localhost:5001/features/2,3,4,1/probs
+3. http://localhost:5003/users/1/top/10

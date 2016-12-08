@@ -2,7 +2,7 @@ import os
 import uuid
 from pyspark.mllib.recommendation import MatrixFactorizationModel
 import logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.ERROR)
 logger = logging.getLogger(__name__)
 
 class MovieCFModel:
