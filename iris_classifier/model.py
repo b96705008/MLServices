@@ -20,7 +20,7 @@ class IrisDnnClassifier:
         loaded_model.load_weights(self.model_path + "/model.h5")
 
         # warm up
-        loaded_model.predict(np.array([[2,3,4,1]]))
+        x = loaded_model.predict(np.array([[2,3,4,1]]))
 
         # setting
         self.model = loaded_model

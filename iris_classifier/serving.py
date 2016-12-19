@@ -1,18 +1,20 @@
-from env import root_dir, nice_json
+from utils import root_dir, nice_json
 from flask import Flask, Blueprint
 import json
 from engine import IrisPredictEngine
+import redis
 
 import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-def init_engine(train=True):
+def init_engine():
     dataset_path = "{}/datasets/iris.csv".format(root_dir())
     model_path = "{}/models/iris_dnn".format(root_dir())
-    engine = IrisPredictEngine(dataset_path, model_path)
-    engine.refresh(train)
+    r = redis.Redis()
+    engine = IrisPredictEngine(dataset_path, model_path, r)
+    engine.refresh_model()
     return engine
 
 
@@ -36,15 +38,14 @@ def get_service(engine):
         iris_class = dnn_clf.predict_class(features)
         return nice_json({'iris_class': iris_class})
 
+    def
+
     return service
 
 if __name__ == '__main__':
     engine = init_engine()
+    engine.start()
     service = get_service(engine)
     app = Flask(__name__)
     app.register_blueprint(service)
-    app.run(port=5001, debug=True)
-
-    # #iris_dnn_clf = IrisDnnClassifier(model_path)
-    # print(iris_dnn_clf.predict_probs([2,3,4,1]))
-    # print(iris_dnn_clf.predict_class([2,3,4,1]))
+    app.run(port=5001, debug=False)

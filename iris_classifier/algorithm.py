@@ -2,7 +2,7 @@ import numpy as np
 from keras.models import Sequential
 from keras.layers.core import Dense, Activation, Dropout
 from keras.utils import np_utils
-from sklearn.cross_validation import train_test_split
+from sklearn.model_selection import train_test_split
 
 
 def encode_one_hot(arr):
