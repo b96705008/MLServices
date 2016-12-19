@@ -38,8 +38,6 @@ def get_service(engine):
         iris_class = dnn_clf.predict_class(features)
         return nice_json({'iris_class': iris_class})
 
-    def
-
     return service
 
 if __name__ == '__main__':

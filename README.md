@@ -46,8 +46,14 @@
 ### Microservice
 * Start movielens service on port 5003, iris service on port 5001
 ```
-  python movielens_recommender/serving.py
+  # redis-server should start
+  python iris_classifier/builder.py
   python iris_classifier/serving.py
+  # PUBLISH iris_builder BUILD_MODEL
+  # PUBLISH iris_api KILL
+
+  # recommender
+  python movielens_recommender/serving.py
 ```
 * Routes
 1. http://localhost:5001/features/2,3,4,1/class
