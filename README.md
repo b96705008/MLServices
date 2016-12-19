@@ -27,36 +27,30 @@
 ## Example
 ### Required
 * pyspark (1.6 or 2.0)
-* keras
+* keras (tensorflow & theano) - contribute from RC
 
 ### Services
 * MoviesLens recommender
 * Iris classifier
 
-### Run Global
-*  Start server on port 8000
+### Run Microservice
+* Start iris service on port 5001, movielens service on port 5002
 ```
-  python app.py
-```
-* Routes
-1. http://localhost:8000/iris/features/2,3,4,1/class
-2. http://localhost:8000/iris/features/2,3,4,1/probs
-3. http://localhost:8000/movielens/users/1/top/10
+  # redis-server should start (pubsub server)
 
-### Microservice
-* Start movielens service on port 5003, iris service on port 5001
-```
   # == IRIS DNN classifier ==
-  # redis-server should start
-  python iris_classifier/builder.py
-  python iris_classifier/serving.py
+  python services/iris_classifier/builder.py
+  python services/iris_classifier/serving.py
   # redis-cli: PUBLISH iris_builder BUILD_MODEL
   # redis-cli: PUBLISH iris_api KILL
 
   # == MovieLens recommender ==
-  python movielens_recommender/serving.py
+  python services/movielens_recommender/builder.py
+  python services/movielens_recommender/serving.py
+  # redis-cli: PUBLISH movie_rc_builder BUILD_MODEL
+  # redis-cli: PUBLISH movie_rc_api KILL
 ```
 * Routes
 1. http://localhost:5001/features/2,3,4,1/class
 2. http://localhost:5001/features/2,3,4,1/probs
-3. http://localhost:5003/users/1/top/10
+3. http://localhost:5002/users/1/top/10
