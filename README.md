@@ -1,7 +1,7 @@
 # MLServices
 * reference from http://predictionio.incubator.apache.org/system/
 
-## Module structure (movie_len_recommender)
+## Module structure (services)
 ### dataset
 * prepare training data
 * prepare entity id map
@@ -10,19 +10,23 @@
 * train model
 * save model or just dump result
 
+### builder
+* coordinate dataset to algorithm
+* subscribe for BUILD_MODEL command
+* publish NEW_MODEL for engine
+* builder service app
+
 ### model
 * load model or/and using dataset
 * predict, recommend, or serve function
 
 ### engine
-* coordinate dataset, algorithm and service
-* build new service by changing dataset, algorithm
-* support luigi or any scheduler in the future
-* https://github.com/spotify/luigi
+* coordinate model for API service(serving)
+* subscribe NEW_MODEL command
 
 ### serving
 * Flask API route
-* Can be merge to app.py (global) or microservice
+* API service app
 
 ## Example
 ### Required
