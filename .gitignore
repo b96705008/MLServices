@@ -100,3 +100,4 @@ derby.log
 metadata
 .DS_Store
 *.rdb
+.idea

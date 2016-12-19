@@ -1,6 +1,5 @@
-from utils import root_dir, nice_json
+from utils.env import root_dir, nice_json
 from flask import Flask, Blueprint
-import json
 from engine import IrisPredictEngine
 import redis
 
@@ -14,7 +13,6 @@ def init_engine():
     model_path = "{}/models/iris_dnn".format(root_dir())
     r = redis.Redis()
     engine = IrisPredictEngine(dataset_path, model_path, r)
-    engine.refresh_model()
     return engine
 
 

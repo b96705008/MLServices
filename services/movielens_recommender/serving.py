@@ -1,19 +1,18 @@
-import os
-from env import root_dir, nice_json, init_spark_context
-from flask import Flask, Blueprint
-from werkzeug.exceptions import NotFound
-from movielens_recommender.engine import MovieRCEngine
+from utils.env import root_dir, nice_json, init_spark_context
+from flask import Flask, Blueprint, request
+from engine import MovieRCEngine
+import redis
 
 import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-def init_engine(sc, train=True):
-    dataset_path = "{}/datasets/ml-latest-small".format(root_dir())
+def init_engine(sc):
+    movie_path = "{}/datasets/ml-latest-small/movies.csv".format(root_dir())
     model_path = "{}/models/movie_lens_als".format(root_dir())
-    engine = MovieRCEngine(sc, dataset_path, model_path)
-    engine.refresh(train)
+    r = redis.Redis()
+    engine = MovieRCEngine(sc, model_path, movie_path, r)
     return engine
 
 
@@ -41,8 +40,9 @@ def get_service(engine):
 
 if __name__ == '__main__':
     sc = init_spark_context()
-    engine = init_engine(sc, False)
+    engine = init_engine(sc)
+    engine.start()
     service = get_service(engine)
     app = Flask(__name__)
     app.register_blueprint(service)
-    app.run(port=5003, debug=True)
+    app.run(port=5002, debug=True)

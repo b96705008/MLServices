@@ -1,4 +1,3 @@
-import os
 import shutil
 from pyspark.mllib.recommendation import ALS
 

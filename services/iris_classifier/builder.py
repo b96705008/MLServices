@@ -1,6 +1,6 @@
 from dataset import IrisDataset
 from algorithm import IrisDNN
-from utils import root_dir
+from utils.env import root_dir
 import redis
 
 

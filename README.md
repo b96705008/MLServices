@@ -46,13 +46,14 @@
 ### Microservice
 * Start movielens service on port 5003, iris service on port 5001
 ```
+  # == IRIS DNN classifier ==
   # redis-server should start
   python iris_classifier/builder.py
   python iris_classifier/serving.py
-  # PUBLISH iris_builder BUILD_MODEL
-  # PUBLISH iris_api KILL
+  # redis-cli: PUBLISH iris_builder BUILD_MODEL
+  # redis-cli: PUBLISH iris_api KILL
 
-  # recommender
+  # == MovieLens recommender ==
   python movielens_recommender/serving.py
 ```
 * Routes
