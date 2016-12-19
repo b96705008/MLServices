@@ -1,8 +1,10 @@
 import threading
+
+from keras import backend as K
+
 from dataset import IrisDataset
 from algorithm import IrisDNN
 from model import IrisDnnClassifier
-
 
 class IrisPredictEngine(threading.Thread):
     channel = 'iris_api'
@@ -39,6 +41,10 @@ class IrisPredictEngine(threading.Thread):
     def refresh_model(self):
         print("refresh iris model... ")
         # load model
+
+        if K._BACKEND == "tensorflow" and hasattr(self, "model") and isinstance(self.model, IrisDnnClassifier) and hasattr(self.model, "session"):
+            self.model.session.close()
+
         self.model = IrisDnnClassifier(self.model_path)
 
     def get_model(self):

@@ -1,4 +1,7 @@
+import os
+
 import numpy as np
+
 from keras.models import Sequential
 from keras.layers.core import Dense, Activation, Dropout
 from keras.utils import np_utils
@@ -54,7 +57,12 @@ class IrisDNN:
     def save_model(self):
         # serialize model to JSON
         model_json = self.model.to_json()
-        with open(self.model_path + "/iris_model.json", "w") as json_file:
+
+        # Create folder if the targeted folder is NOT existing
+        if not os.path.exists(self.model_path):
+            os.makedirs(self.model_path)
+
+        with open(os.path.join(self.model_path, "iris_model.json"), "w") as json_file:
             json_file.write(model_json)
         # serialize weights to HDF5
         self.model.save_weights(self.model_path + "/model.h5")

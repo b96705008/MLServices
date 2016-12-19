@@ -1,6 +1,8 @@
 import numpy as np
-from keras.models import model_from_json
+import tensorflow as tf
 
+from keras import backend as K
+from keras.models import model_from_json
 
 class IrisDnnClassifier:
     def __init__(self, model_path):
@@ -15,6 +17,11 @@ class IrisDnnClassifier:
         loaded_model_json = json_file.read()
         json_file.close()
         loaded_model = model_from_json(loaded_model_json)
+
+        # assign the session to the attribute when the backend is 'tensorflow'
+        if K._BACKEND == "tensorflow":
+            self.session = tf.Session()
+            K.set_session(self.session)
 
         # load weights into new model
         loaded_model.load_weights(self.model_path + "/model.h5")
