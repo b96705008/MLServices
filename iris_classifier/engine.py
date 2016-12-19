@@ -19,30 +19,15 @@ class IrisPredictEngine(threading.Thread):
         self.pubsub = self.redis.pubsub()
         self.pubsub.subscribe([self.channel])
 
-    # def refresh_model(self):
-    #     # load dataset
-    #     self.dataset = IrisDataset(self.dataset_path)
-    #
-    #     # train model
-    #     iris_dnn = IrisDNN(self.dataset, self.model_path)
-    #     iris_dnn.train_model()
-    #     iris_dnn.save_model()
-    #
-    #     # load model
-    #     self.model = IrisDnnClassifier(self.model_path)
-    #
-    # def refresh(self, train=True):
-    #     print("refresh IrisPredictEngine ... ")
-    #     if train:
-    #         self.refresh_model()
-    #     else:
-    #         self.model = IrisDnnClassifier(self.model_path)
-
     def refresh_model(self):
         print("refresh iris model... ")
         # load model
 
-        if K._BACKEND == "tensorflow" and hasattr(self, "model") and isinstance(self.model, IrisDnnClassifier) and hasattr(self.model, "session"):
+        if K._BACKEND == "tensorflow" \
+            and hasattr(self, "model") \
+            and isinstance(self.model, IrisDnnClassifier) \
+            and hasattr(self.model, "session"):
+
             self.model.session.close()
 
         self.model = IrisDnnClassifier(self.model_path)
