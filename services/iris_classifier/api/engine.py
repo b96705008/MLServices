@@ -2,8 +2,6 @@ import threading
 
 from keras import backend as K
 
-from dataset import IrisDataset
-from algorithm import IrisDNN
 from model import IrisDnnClassifier
 
 class IrisPredictEngine(threading.Thread):

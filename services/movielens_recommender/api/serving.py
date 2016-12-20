@@ -1,19 +1,9 @@
-from utils.env import root_dir, nice_json, init_spark_context
-from flask import Flask, Blueprint, request
-from engine import MovieRCEngine
-import redis
+from utils.env import nice_json
+from flask import Blueprint, request
 
 import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-
-def init_engine(sc):
-    movie_path = "{}/datasets/ml-latest-small/movies.csv".format(root_dir())
-    model_path = "{}/models/movie_lens_als".format(root_dir())
-    r = redis.Redis()
-    engine = MovieRCEngine(sc, model_path, movie_path, r)
-    return engine
 
 
 def get_service(engine):
@@ -38,11 +28,3 @@ def get_service(engine):
     return service
 
 
-if __name__ == '__main__':
-    sc = init_spark_context()
-    engine = init_engine(sc)
-    engine.start()
-    service = get_service(engine)
-    app = Flask(__name__)
-    app.register_blueprint(service)
-    app.run(port=5002, debug=True)

@@ -1,19 +1,11 @@
 from utils.env import root_dir, nice_json
-from flask import Flask, Blueprint
+from flask import Blueprint
 from engine import IrisPredictEngine
 import redis
 
 import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-
-def init_engine():
-    dataset_path = "{}/datasets/iris.csv".format(root_dir())
-    model_path = "{}/models/iris_dnn".format(root_dir())
-    r = redis.Redis()
-    engine = IrisPredictEngine(dataset_path, model_path, r)
-    return engine
 
 
 def get_service(engine):
@@ -38,10 +30,4 @@ def get_service(engine):
 
     return service
 
-if __name__ == '__main__':
-    engine = init_engine()
-    engine.start()
-    service = get_service(engine)
-    app = Flask(__name__)
-    app.register_blueprint(service)
-    app.run(port=5001, debug=False)
+

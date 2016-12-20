@@ -1,7 +1,5 @@
 from dataset import IrisDataset
 from algorithm import IrisDNN
-from utils.env import root_dir
-import redis
 
 
 class IrisModelBuilder:
@@ -39,10 +37,4 @@ class IrisModelBuilder:
                 self.build_model()
 
 
-if __name__ == '__main__':
-    dataset_path = "{}/datasets/iris.csv".format(root_dir())
-    model_path = "{}/models/iris_dnn".format(root_dir())
-    r = redis.Redis()
-    builder = IrisModelBuilder(dataset_path, model_path, r)
-    builder.build_model()
-    builder.run()
+

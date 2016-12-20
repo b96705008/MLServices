@@ -1,8 +1,6 @@
-from dataset import MovieLenRatings
 from algorithm import MovieALS
-from model import MovieCFModel
-from utils.env import root_dir, init_spark_context
-import redis
+from dataset import MovieLenRatings
+from services.movielens_recommender.api.model import MovieCFModel
 
 
 # Maybe use luigi
@@ -43,14 +41,10 @@ class MovieRCBuilder:
         # publish
         self.redis.publish('movie_rc_api', 'NEW_MODEL')
 
-    def refresh(self, train=True):
+    def refresh(self):
         print("refresh...")
         self.refresh_dataset()
-        if train:
-            self.refresh_model()
-        else:
-            self.model = MovieCFModel(self.sc, self.model_path, self.dataset_path)
-
+        self.refresh_model()
 
     def run(self):
         print("\nListen build movie rc command...")
@@ -60,14 +54,7 @@ class MovieRCBuilder:
                 print(self, 'unsubscribed and finished')
                 break
             elif item['data'] == 'BUILD_MODEL':
-                self.refresh(train=True)
+                self.refresh()
 
 
-if __name__ == '__main__':
-    sc = init_spark_context()
-    rating_path = "{}/datasets/ml-latest-small/ratings.csv".format(root_dir())
-    model_path = "{}/models/movie_lens_als".format(root_dir())
-    r = redis.Redis()
-    builder = MovieRCBuilder(sc, rating_path, model_path, r)
-    builder.refresh(train=True)
-    builder.run()
+

@@ -14,9 +14,7 @@ class MovieRCEngine(threading.Thread):
         self.redis = r
         self.pubsub = self.redis.pubsub()
         self.pubsub.subscribe([self.channel])
-
         self.refresh_model()
-
 
     def refresh_model(self):
         print("refresh model ...")
