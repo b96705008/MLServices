@@ -19,15 +19,15 @@
 * builder service app
 
 ### API service
-### model
+#### model
 * load model or/and using dataset
 * predict, recommend, or serve function
 
-### engine
+#### engine
 * coordinate model for API service(serving)
 * subscribe NEW_MODEL command
 
-### serving
+#### serving
 * Flask API route
 * API service app
 
