@@ -25,13 +25,13 @@ def run(channels, service):
 
     # start service
     if service == 'builder':
-        iris_builder = IrisModelBuilder(data_path, model_path, redis.Redis())
-        iris_builder.build_model()
+        iris_builder = IrisModelBuilder(data_path, model_path, channels=channels.split(","))
+        iris_builder.build(channels.split(","))
         iris_builder.run()
 
     elif service == 'api':
         engine = IrisPredictEngine(data_path, model_path, channels=channels.split(","))
-        engine.start()
+        engine.run()
 
         service = get_service(engine, service_name)
 

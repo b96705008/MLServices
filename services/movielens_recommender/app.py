@@ -34,7 +34,7 @@ def run(channels, service):
 
     elif service == 'api':
         engine = MovieRCEngine(sc, movie_path, model_path, channels=channels.split(","))
-        engine.start()
+        engine.run()
 
         service = get_service(engine)
 
