@@ -1,8 +1,8 @@
 import os
 import json
+
 from flask import make_response
 from pyspark import SparkContext, SparkConf
-
 
 def root_dir():
     """ Returns root director for this project """
@@ -18,7 +18,9 @@ def nice_json(arg):
 def init_spark_context():
     conf = SparkConf().setAppName("ALS Service").setMaster("local[*]")
     sc = SparkContext(conf=conf)
+
     logger = sc._jvm.org.apache.log4j
     logger.LogManager.getLogger("org").setLevel(logger.Level.OFF)
     logger.LogManager.getLogger("akka").setLevel(logger.Level.OFF)
+
     return sc
