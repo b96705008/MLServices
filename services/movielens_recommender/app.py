@@ -28,8 +28,8 @@ def run(channels, service):
 
     # start service
     if service == 'builder':
-        builder = MovieRCBuilder(sc, rating_path, model_path, redis.Redis())
-        builder.refresh()
+        builder = MovieRCBuilder(sc, rating_path, model_path, channels=channels.split(","))
+        builder.build_model()
         builder.run()
 
     elif service == 'api':
