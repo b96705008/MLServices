@@ -1,37 +1,46 @@
+#!/usr/bin/env python
+
+import os
 import sys
-from flask import Flask
 import redis
+import click
+
+from flask import Flask
 
 from utils.env import root_dir, init_spark_context
 from api.engine import MovieRCEngine
 from api.serving import get_service
 from builder.builder import MovieRCBuilder
 
-if __name__ == '__main__':
-    service_type = 'builder'
+@click.command()
+@click.option("--channels", required=True)
+@click.option("--service", type=click.Choice(["builder", "api"]))
+def run(channels, service):
     sc = init_spark_context()
+
+    module_name = __name__
+    service_name = 'movie_lens_als'
+
     rating_path = "{}/datasets/ml-latest-small/ratings.csv".format(root_dir())
     movie_path = "{}/datasets/ml-latest-small/movies.csv".format(root_dir())
     model_path = "{}/models/movie_lens_als".format(root_dir())
     r = redis.Redis()
 
-    # sys args
-    if len(sys.argv) > 1:
-        service_type = sys.argv[1]
-
     # start service
-    if service_type == 'builder':
-        builder = MovieRCBuilder(sc, rating_path, model_path, r)
+    if service == 'builder':
+        builder = MovieRCBuilder(sc, rating_path, model_path, redis.Redis())
         builder.refresh()
         builder.run()
 
-    elif service_type == 'api':
-        engine = MovieRCEngine(sc, model_path, movie_path, r)
+    elif service == 'api':
+        engine = MovieRCEngine(sc, movie_path, model_path, channels=channels.split(","))
         engine.start()
+
         service = get_service(engine)
+
         app = Flask(__name__)
         app.register_blueprint(service)
         app.run(port=5002, debug=False)
 
-
-
+if __name__ == "__main__":
+    run()
