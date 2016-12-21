@@ -1,7 +1,8 @@
-from utils.env import root_dir, nice_json
-from flask import Blueprint
-from engine import IrisPredictEngine
 import redis
+from flask import Blueprint
+
+from utils.env import root_dir, nice_json
+from engine import IrisPredictEngine
 
 import logging
 logging.basicConfig(level=logging.INFO)

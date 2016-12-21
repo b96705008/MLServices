@@ -46,11 +46,13 @@
 ### Run Microservice
 * Start iris service on port 5001, movielens service on port 5002
 ```
-  # redis-server should start (pubsub server)
+  # should be execute the bin/start.sh firstly
+  # 1. it will export the enviornment python path
+  # 2. it will start the redis-server
 
   # == IRIS DNN classifier ==
-  python services/iris_classifier/app.py builder
-  python services/iris_classifier/app.py api
+  python services/iris_classifier/app.py --service builder
+  python services/iris_classifier/app.py --service api
   # redis-cli: PUBLISH iris_builder BUILD_MODEL
   # redis-cli: PUBLISH iris_api KILL
 
