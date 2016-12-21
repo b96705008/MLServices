@@ -3,9 +3,9 @@ from model import MovieCFModel
 
 class MovieRCEngine(MLEngine):
     def __init__(self, sc, dataset_path, model_path, channels=[], listener=None):
-        MLEngine.__init__(self, dataset_path, model_path, channels, listener)
-
         self.sc = sc
+
+        MLEngine.__init__(self, dataset_path, model_path, channels, listener)
 
     def refresh_model(self):
         print("refresh model ...")
