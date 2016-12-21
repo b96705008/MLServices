@@ -9,8 +9,8 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-def get_service(engine):
-    service = Blueprint('iris_classifier', __name__)
+def get_service(engine, service_name='iris_classifier'):
+    service = Blueprint(service_name, __name__)
 
     def parse_feature_str(feature_str):
         return map(lambda x: float(x), feature_str.split(","))
