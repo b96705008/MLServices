@@ -51,14 +51,14 @@
   # 2. it will start the redis-server
 
   # == IRIS DNN classifier ==
-  python services/iris_classifier/app.py --service builder
-  python services/iris_classifier/app.py --service api
+  python services/iris_classifier/app.py --service builder --channel iris_builder
+  python services/iris_classifier/app.py --service api --channel iris_api
   # redis-cli: PUBLISH iris_builder BUILD_MODEL
   # redis-cli: PUBLISH iris_api KILL
 
   # == MovieLens recommender ==
-  python services/movielens_recommender/app.py builder
-  python services/movielens_recommender/app.py api
+  python services/movielens_recommender/app.py --service builder --channel movielens_builder
+  python services/movielens_recommender/app.py --service api --channel movielens_api
   # redis-cli: PUBLISH movie_rc_builder BUILD_MODEL
   # redis-cli: PUBLISH movie_rc_api KILL
 ```
