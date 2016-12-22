@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 
 import os
-import sys
-import redis
 import click
 
 from flask import Flask
