@@ -1,5 +1,4 @@
 import redis
-import threading
 
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -45,9 +44,6 @@ class MLEngine(object):
     def __init__(self, dataset_path, model_path, channels=[], listener=None):
         self.model_path = model_path
         self.dataset_path = dataset_path
-
-        # redis channel
-        #threading.Thread.__init__(self)
 
         if listener is None:
             self.listener = MLListener(channels=channels)
