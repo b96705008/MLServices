@@ -2,6 +2,7 @@ import os
 
 import numpy as np
 
+from utils.env import logger
 from keras.models import Sequential
 from keras.layers.core import Dense, Activation, Dropout
 from keras.utils import np_utils
@@ -10,6 +11,7 @@ from sklearn.model_selection import train_test_split
 
 def encode_one_hot(arr):
     uniques, ids = np.unique(arr, return_inverse=True)
+
     return np_utils.to_categorical(ids, len(uniques)), uniques
 
 
@@ -60,7 +62,8 @@ class IrisDNN(object):
         # Start fit
         self.model.fit(train_X, train_y_ohe, nb_epoch=100, batch_size=10)
         loss, accuracy = self.model.evaluate(test_X, test_y_ohe)
-        print("Accuracy = {:.2f}".format(accuracy))
+
+        logger.info("Accuracy = {:.2f}".format(accuracy))
 
     def save_model(self):
         # serialize model to JSON

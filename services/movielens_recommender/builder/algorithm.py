@@ -1,13 +1,13 @@
 import shutil
+
+from utils.env import logger, sc
 from pyspark.mllib.recommendation import ALS
 
-import logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
-class MovieALS:
-    def __init__(self, sc, dataset, params):
+class MovieALS(object):
+    def __init__(self, dataset, params):
         self.sc = sc
+
         self.dataset = dataset
         self.rank = params['rank']
         self.seed = params['seed']

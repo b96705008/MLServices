@@ -2,12 +2,13 @@ import os
 import numpy as np
 
 from basic.interface import MLModel
+from utils.env import logger
 
 from keras.models import model_from_json
 
 class IrisModel(MLModel):
     def load_model(self):
-        print("Loaded model from disk")
+        logger.info("Loaded model from disk")
 
         # load json and create model
         filepath = os.path.join(self.model_path, "iris_model.json")
