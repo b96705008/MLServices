@@ -1,3 +1,4 @@
+from utils.env import logger
 from basic.interface import MLBuilder
 from algorithm import MovieALS
 from dataset import MovieLenRatings
@@ -5,23 +6,20 @@ from services.movielens_recommender.api.model import MovieCFModel
 
 
 class MovieRCBuilder(MLBuilder):
-    def __init__(self, sc, dataset_path, model_path, channels=[], listener=None):
-        self.sc = sc
-        MLBuilder.__init__(self, dataset_path, model_path, channels, listener)
-
     def refresh_dataset(self, new_dataset=None):
-        print("refresh dataset ...")
+        logger.info("refresh dataset of {}...".format(type(self).__name__))
+
         # dataset
         if new_dataset is None:
-            self.dataset = MovieLenRatings(self.sc, self.dataset_path)
+            self.dataset = MovieLenRatings(self.dataset_path)
         else:
             self.dataset = new_dataset
 
     def refresh_model(self):
-        print("refresh model ...")
+        logger.info("refresh {} model ...".format(type(self).__name__))
 
         # algorithm
-        movie_rc_algo = MovieALS(self.sc, self.dataset, {
+        movie_rc_algo = MovieALS(self.dataset, {
             'rank': 8,
             'seed': 5,
             'iterations': 10,

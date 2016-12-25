@@ -1,7 +1,8 @@
 from basic.interface import MLEngine
+from utils.env import logger
 
 class IrisEngine(MLEngine):
     def refresh_model(self):
-        print("refresh iris model... ")
+        logger.info("refresh iris model... ")
 
         self.model = self.class_model(self.model_path)

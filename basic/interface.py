@@ -2,10 +2,7 @@ import redis
 import tensorflow as tf
 
 from keras import backend as K
-
-import logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+from utils.env import logger
 
 EVENT_NEW = "NEW_MODEL"
 EVENT_TRAIN = "BUILD_MODEL"
@@ -96,14 +93,14 @@ class MLDataset(object):
         self.X = None
         self.Y = None
 
+        self.init()
         self.prepare_data()
-        self.feature_engineer()
+
+    def init(self):
+        raise NotImplementedError
 
     def prepare_data(self):
         raise NotImplementedError
-
-    def feature_engineer(self):
-        pass
 
 class MLEngine(object):
     def __init__(self, dataset_path, class_model, model_path, channel, listener=None):
@@ -118,6 +115,7 @@ class MLEngine(object):
             self.listener = listener
 
         self.model = None
+
         self.process()
 
     def process(self):
@@ -133,7 +131,7 @@ class MLEngine(object):
         return self.model
 
     def run(self):
-        print("Listen {} channel...".format(self.listener.get_channel()))
+        logger.info("Listen {} channel...".format(self.listener.get_channel()))
 
         for item in self.listener.listen():
             if item['data'] == EVENT_KILL:

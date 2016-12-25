@@ -1,9 +1,5 @@
-import logging
-
 from basic.interface import MLDataset
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+from utils.env import logger, sc
 
 def get_counts_and_averages(id_and_ratings_tuple):
     nratings = len(id_and_ratings_tuple[1])
@@ -12,11 +8,8 @@ def get_counts_and_averages(id_and_ratings_tuple):
     return id_and_ratings_tuple[0], (nratings, float(total_ratings) / nratings)
 
 class MovieLenRatings(MLDataset):
-    def __init__(self, sc, dataset_path):
-        logger.info("Starting up the Data preparator...")
-
+    def init(self):
         self.sc = sc
-        MLDataset.__init__(self, dataset_path)
 
     def prepare_data(self):
         logger.info("Prepare MovieLens data from {}".format(self.dataset_path))

@@ -5,7 +5,7 @@ import click
 import ConfigParser
 
 from flask import Flask
-from utils.env import root_dir
+from utils.env import root_dir, init_spark_context, logger
 
 @click.command()
 @click.option("-c", "--config", required=True)
@@ -19,8 +19,15 @@ def run(config, service, func, port, debug):
 
     service_name = cfg.get("path", "location")
 
-    dataset_path = os.path.join(root_dir(), "datasets", cfg.get("path", "dataset"))
+    dataset_api_path = os.path.join(root_dir(), "datasets", cfg.get("path", "dataset_api"))
+    dataset_builder_path = os.path.join(root_dir(), "datasets", cfg.get("path", "dataset_builder"))
     model_path = os.path.join(root_dir(), "models", cfg.get("path", "model"))
+
+    if cfg.has_option("setting", "spark_mode") and cfg.getboolean("setting", "spark_mode"):
+        init_spark_context()
+        logger.info("Turn on the spark_mode")
+
+    listener = None
 
     mod = __import__("services.{}.builder.dataset".format(service_name),
                      fromlist=["services.{}.builder".format(service_name)])
@@ -44,7 +51,8 @@ def run(config, service, func, port, debug):
         builder = __import__("services.{}.builder.builder".format(service_name),
                              fromlist=["services.{}.builder".format(service_name)])
 
-        tbuilder = getattr(builder, cfg.get("class", "builder"))(class_dataset, dataset_path, class_algo, model_path, channels)
+        tbuilder = getattr(builder, cfg.get("class", "builder"))(class_dataset, dataset_builder_path, class_algo, model_path,\
+                           channels=channels, listener=listener)
         tbuilder.build()
         tbuilder.run()
 
@@ -53,7 +61,8 @@ def run(config, service, func, port, debug):
         engine = __import__("services.{}.api.engine".format(service_name),
                              fromlist=["services.{}.engine".format(service_name)])
 
-        tengine = getattr(engine, cfg.get("class", "engine"))(dataset_path, class_model, model_path, [channel_api])
+        tengine = getattr(engine, cfg.get("class", "engine"))(dataset_api_path, class_model, model_path,\
+                          channel=[channel_api], listener=listener)
         tengine.run()
 
         mod = __import__("services.{}.api.service".format(service_name),

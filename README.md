@@ -51,8 +51,8 @@
   # 2. it will start the redis-server
 
   # == IRIS DNN classifier ==
-  python services/iris_classifier/app.py --service builder --channel iris_builder
-  python services/iris_classifier/app.py --service api --channel iris_api
+  python app.py --service iris --func builder --config iris_dnn.cfg
+  python app.py --service iris --func api --config iris_dnn.cfg
   # redis-cli: PUBLISH iris_builder BUILD_MODEL
   # redis-cli: PUBLISH iris_api KILL
 

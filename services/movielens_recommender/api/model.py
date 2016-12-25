@@ -1,18 +1,17 @@
 import os
 import uuid
+
+from utils.env import logger, sc
 from pyspark.mllib.recommendation import MatrixFactorizationModel
 
-import logging
-logging.basicConfig(level=logging.ERROR)
-logger = logging.getLogger(__name__)
 
-
-class MovieCFModel:
-    def __init__(self, sc, model_path, movie_path):
+class MovieCFModel(object):
+    def __init__(self, model_path, movie_path):
         self._id = str(uuid.uuid1())
         self.sc = sc
         self.model_path = model_path
         self.movie_path = movie_path
+
         # load model
         self.model = MatrixFactorizationModel.load(sc, model_path)
         self.__load_movies()
