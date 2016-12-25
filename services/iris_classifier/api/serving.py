@@ -2,7 +2,7 @@ from flask import Blueprint
 
 from utils.env import nice_json
 
-def get_service(engine, service_name='iris_classifier'):
+def get_service(engine, service_name):
     service = Blueprint(service_name, __name__)
 
     def parse_feature_str(feature_str):

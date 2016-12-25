@@ -1,13 +1,9 @@
-from utils.env import nice_json
+from utils.env import nice_json, logger
 from flask import Blueprint, request
 
-import logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
-
-def get_service(engine):
-    service = Blueprint('movielens_recommender', __name__)
+def get_service(engine, service_name):
+    service = Blueprint(service_name, __name__)
 
     @service.route("/users/<int:user_id>/top/<int:count>", methods=['GET'])
     def top_ratings(user_id, count):

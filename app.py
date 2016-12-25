@@ -2,8 +2,10 @@
 
 import os
 import click
+import socket
 import ConfigParser
 
+from threading import Thread
 from flask import Flask
 from utils.env import root_dir, init_spark_context, logger
 
@@ -11,9 +13,8 @@ from utils.env import root_dir, init_spark_context, logger
 @click.option("-c", "--config", required=True)
 @click.option("-s", "--service", required=True)
 @click.option("-f", "--func", type=click.Choice(["builder", "api"]))
-@click.option("-p", "--port", default=5001)
 @click.option("-v", "--debug", default=False)
-def run(config, service, func, port, debug):
+def run(config, service, func, debug):
     cfg = ConfigParser.RawConfigParser()
     cfg.read(config)
 
@@ -59,18 +60,20 @@ def run(config, service, func, port, debug):
     elif func == 'api':
         # import dynamic modules
         engine = __import__("services.{}.api.engine".format(service_name),
-                             fromlist=["services.{}.engine".format(service_name)])
+                             fromlist=["services.{}.api".format(service_name)])
 
         tengine = getattr(engine, cfg.get("class", "engine"))(dataset_api_path, class_model, model_path,\
                           channel=[channel_api], listener=listener)
-        tengine.run()
+        tengine.start()
 
-        mod = __import__("services.{}.api.service".format(service_name),
-                         fromlist=["services.{}.service".format(service_name)])
+        mod = __import__("services.{}.api.serving".format(service_name),
+                         fromlist=["services.{}.api".format(service_name)])
         service = mod.get_service(tengine, service_name)
 
-        app = Flask(service)
+        app = Flask(service_name)
         app.register_blueprint(service)
+
+        port = cfg.getint("setting", "port")
         app.run(port=port, debug=debug)
 
 if __name__ == "__main__":

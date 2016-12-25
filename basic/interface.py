@@ -1,6 +1,7 @@
 import redis
 import tensorflow as tf
 
+from threading import Thread
 from keras import backend as K
 from utils.env import logger
 
@@ -102,8 +103,10 @@ class MLDataset(object):
     def prepare_data(self):
         raise NotImplementedError
 
-class MLEngine(object):
+class MLEngine(Thread):
     def __init__(self, dataset_path, class_model, model_path, channel, listener=None):
+        Thread.__init__(self)
+
         self.class_model = class_model
 
         self.model_path = model_path
