@@ -4,7 +4,6 @@ from dataset import MovieLenRatings
 from services.movielens_recommender.api.model import MovieCFModel
 
 
-# Maybe use luigi
 class MovieRCBuilder(MLBuilder):
     def __init__(self, sc, dataset_path, model_path, channels=[], listener=None):
         self.sc = sc
