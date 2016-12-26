@@ -7,7 +7,7 @@ import ConfigParser
 
 from threading import Thread
 from flask import Flask
-from utils.env import root_dir, init_spark_context, logger
+from utils.env import root_dir, data_dir, init_spark_context, logger
 
 @click.command()
 @click.option("-c", "--config", required=True)
@@ -20,9 +20,9 @@ def run(config, service, func, debug):
 
     service_name = cfg.get("path", "location")
 
-    dataset_api_path = os.path.join(root_dir(), "datasets", cfg.get("path", "dataset_api"))
-    dataset_builder_path = os.path.join(root_dir(), "datasets", cfg.get("path", "dataset_builder"))
-    model_path = os.path.join(root_dir(), "models", cfg.get("path", "model"))
+    dataset_api_path = os.path.join(data_dir(), "datasets", cfg.get("path", "dataset_api"))
+    dataset_builder_path = os.path.join(data_dir(), "datasets", cfg.get("path", "dataset_builder"))
+    model_path = os.path.join(data_dir(), "models", cfg.get("path", "model"))
 
     if cfg.has_option("setting", "spark_mode") and cfg.getboolean("setting", "spark_mode"):
         init_spark_context()
