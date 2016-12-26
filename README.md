@@ -49,16 +49,17 @@
   # should be execute the bin/start.sh firstly
   # 1. it will export the enviornment python path
   # 2. it will start the redis-server
+  # 3. (****) The following commands, the working space should be 'ROOT FOLDER' of this repository
 
   # == IRIS DNN classifier ==
-  python app.py --service iris --func builder --config etc/iris_dnn.cfg
-  python app.py --service iris --func api --config etc/iris_dnn.cfg
+  python sbin/app.py --service iris --func builder --config etc/iris_dnn.cfg
+  python sbin/app.py --service iris --func api --config etc/iris_dnn.cfg
   # redis-cli: PUBLISH iris_builder BUILD_MODEL
   # redis-cli: PUBLISH iris_api KILL
 
   # == MovieLens recommender ==
-  python services/movielens_recommender/app.py --service movie --func builder --config etc/movielens.cfg
-  python services/movielens_recommender/app.py --service movie --func api --config etc/movielens.cfg
+  python sbin/app.py --service movie --func builder --config etc/movielens.cfg
+  python sbin/app.py --service movie --func api --config etc/movielens.cfg
   # redis-cli: PUBLISH movie_builder BUILD_MODEL
   # redis-cli: PUBLISH movie_api KILL
 ```
