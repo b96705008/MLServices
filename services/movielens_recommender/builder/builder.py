@@ -1,36 +1,35 @@
-from basic.interface import MLBuilder
+from utils.env import logger, sc
+
+from basic.builder import MLBuilder
 from algorithm import MovieALS
 from dataset import MovieLenRatings
 from services.movielens_recommender.api.model import MovieCFModel
 
 
-# Maybe use luigi
 class MovieRCBuilder(MLBuilder):
-    def __init__(self, sc, dataset_path, model_path, channels=[], listener=None):
-        self.sc = sc
-        MLBuilder.__init__(self, dataset_path, model_path, channels, listener)
-
     def refresh_dataset(self, new_dataset=None):
-        print("refresh dataset ...")
+        logger.info("refresh dataset of {}...".format(type(self).__name__))
+
         # dataset
         if new_dataset is None:
-            self.dataset = MovieLenRatings(self.sc, self.dataset_path)
+            self.dataset = MovieLenRatings(self.dataset_path)
         else:
             self.dataset = new_dataset
 
     def refresh_model(self):
-        print("refresh model ...")
+        logger.info("refresh {} model ...".format(type(self).__name__))
 
         # algorithm
-        movie_rc_algo = MovieALS(self.sc, self.dataset, {
-            'rank': 8,
-            'seed': 5,
-            'iterations': 10,
-            'regularization_parameter': 0.1,
-            'model_path': self.model_path
-        })
-        movie_rc_algo.train_model()
-        movie_rc_algo.save_model()
+        params = {'rank': 8,
+                  'seed': 5,
+                  'iterations': 10,
+                  'regularization_parameter': 0.1,
+                  'model_path': self.model_path,
+                  'sc': sc,
+                  'dataset': self.dataset
+        }
+
+        movie_rc_algo = MovieALS(params)
 
     def build_model(self):
         self.refresh_dataset()

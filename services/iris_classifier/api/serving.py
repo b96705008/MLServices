@@ -1,15 +1,8 @@
-import redis
 from flask import Blueprint
 
-from utils.env import root_dir, nice_json
-from engine import IrisPredictEngine
+from utils.env import nice_json
 
-import logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-
-def get_service(engine, service_name='iris_classifier'):
+def get_service(engine, service_name):
     service = Blueprint(service_name, __name__)
 
     def parse_feature_str(feature_str):
@@ -20,6 +13,7 @@ def get_service(engine, service_name='iris_classifier'):
         features = parse_feature_str(feature_str)
         dnn_clf = engine.get_model()
         probs = dnn_clf.predict_probs(features)
+
         return nice_json(probs)
 
     @service.route("/features/<feature_str>/class")
@@ -27,8 +21,7 @@ def get_service(engine, service_name='iris_classifier'):
         features = parse_feature_str(feature_str)
         dnn_clf = engine.get_model()
         iris_class = dnn_clf.predict_class(features)
+
         return nice_json({'iris_class': iris_class})
 
     return service
-
-

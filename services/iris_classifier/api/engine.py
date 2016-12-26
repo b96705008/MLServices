@@ -1,8 +1,9 @@
-from basic.interface import MLEngine
-from model import IrisDnnClassifier
+from basic.engine import MLEngine
+from utils.env import logger
 
-class IrisPredictEngine(MLEngine):
+class IrisEngine(MLEngine):
     def refresh_model(self):
-        print("refresh iris model... ")
+        logger.info("refresh iris model... ")
 
-        self.model = IrisDnnClassifier(self.model_path)
+        params = {"model_path": self.model_path}
+        self.model = self.class_model(params)

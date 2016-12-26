@@ -1,13 +1,19 @@
-from basic.interface import MLEngine
+import uuid
+
+from utils.env import logger, sc
+from basic.engine import MLEngine
 from model import MovieCFModel
 
+
 class MovieRCEngine(MLEngine):
-    def __init__(self, sc, dataset_path, model_path, channels=[], listener=None):
-        self.sc = sc
-
-        MLEngine.__init__(self, dataset_path, model_path, channels, listener)
-
     def refresh_model(self):
-        print("refresh model ...")
+        logger.info("refresh {} model ...".format(type(self).__name__))
+
         # service
-        self.model = MovieCFModel(self.sc, self.model_path, self.dataset_path)
+        params = {"_id": str(uuid.uuid1()),
+                  "sc": sc,
+                  "movie_path": self.dataset_path,
+                  "model_path": self.model_path}
+
+        self.model = MovieCFModel(params)
+
