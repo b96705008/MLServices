@@ -1,5 +1,5 @@
 from utils.env import logger
-from basic.interface import MLBuilder
+from basic.builder import MLBuilder
 from algorithm import MovieALS
 from dataset import MovieLenRatings
 from services.movielens_recommender.api.model import MovieCFModel

@@ -1,6 +1,6 @@
 import pandas as pd
 
-from basic.interface import MLDataset
+from basic.dataset import MLDataset
 
 
 class IrisDataset(MLDataset):
