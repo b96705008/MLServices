@@ -1,4 +1,4 @@
-from basic.interface import MLDataset
+from basic.dataset import MLDataset
 from utils.env import logger, sc
 
 def get_counts_and_averages(id_and_ratings_tuple):

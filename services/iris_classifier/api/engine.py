@@ -1,4 +1,4 @@
-from basic.interface import MLEngine
+from basic.engine import MLEngine
 from utils.env import logger
 
 class IrisEngine(MLEngine):

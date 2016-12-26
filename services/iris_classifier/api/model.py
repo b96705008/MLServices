@@ -1,7 +1,7 @@
 import os
 import numpy as np
 
-from basic.interface import MLModel
+from basic.model import MLModel
 from utils.env import logger
 
 from keras.models import model_from_json
