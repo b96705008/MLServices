@@ -6,10 +6,8 @@ from utils.env import logger
 
 
 class MLModel(object):
-    def __init__(self, model_path):
-        self.model_path = model_path
-
-        self.load()
+    def __init__(self, params):
+        self.init(params)
 
     def load(self):
         # assign the session to the attribute when the backend is 'tensorflow'
@@ -21,13 +19,13 @@ class MLModel(object):
 
         self.load_model()
 
+    def init(self, params={}):
+        for k, v in params.items():
+            setattr(self, k, v)
+
+        self.load()
+
     def load_model(self):
-        raise NotImplementedError
-
-    def predict_probs(self, features):
-        raise NotImplementedError
-
-    def predict_class(self, features):
         raise NotImplementedError
 
     def before_reload_model(self):

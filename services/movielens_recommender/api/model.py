@@ -1,24 +1,20 @@
 import os
-import uuid
 
+from basic.model import MLModel
 from utils.env import logger, sc
 from pyspark.mllib.recommendation import MatrixFactorizationModel
 
 
-class MovieCFModel(object):
-    def __init__(self, model_path, movie_path):
-        self._id = str(uuid.uuid1())
-        self.sc = sc
-        self.model_path = model_path
-        self.movie_path = movie_path
-
+class MovieCFModel(MLModel):
+    def load_model(self):
         # load model
-        self.model = MatrixFactorizationModel.load(sc, model_path)
+        self.model = MatrixFactorizationModel.load(sc, self.model_path)
         self.__load_movies()
 
     def __load_movies(self):
         logger.info("Loading Movies data...")
-        movies_file_path = os.path.join(self.movie_path)
+
+        movies_file_path = self.movie_path
         movies_raw_RDD = self.sc.textFile(movies_file_path)
         movies_raw_data_header = movies_raw_RDD.take(1)[0]
         self.movies_RDD = movies_raw_RDD \

@@ -1,4 +1,4 @@
-from basic.interface import MLBuilder
+from basic.builder import MLBuilder
 
 
 class IrisBuilder(MLBuilder):
