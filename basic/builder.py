@@ -24,7 +24,10 @@ class MLBuilder(object):
         return self.class_dataset(self.dataset_path)
 
     def build_model(self):
-        self.model = self.class_model(self.dataset(), self.model_path)
+        params = {"dataset": self.dataset(),
+                  "model_path": self.model_path}
+
+        self.model = self.class_model(params)
 
     def build(self):
         self.before_build_model()

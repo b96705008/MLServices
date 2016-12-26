@@ -3,6 +3,8 @@ import os
 import numpy as np
 
 from utils.env import logger
+from basic.algorithm import MLAlgorithm
+
 from keras.models import Sequential
 from keras.layers.core import Dense, Activation, Dropout
 from keras.utils import np_utils
@@ -15,13 +17,7 @@ def encode_one_hot(arr):
     return np_utils.to_categorical(ids, len(uniques)), uniques
 
 
-class IrisDNN(object):
-    def __init__(self, dataset, model_path):
-        self.dataset = dataset
-        self.model_path = model_path
-
-        self.model = None
-
+class IrisDNN(MLAlgorithm):
     def split_data(self, train_size=0.5, random_state=1201):
         train_X, test_X, train_y, test_y = train_test_split(
             self.dataset.X, self.dataset.Y, train_size=train_size, random_state=random_state)
