@@ -25,8 +25,6 @@ class MLBuilder(object):
 
     def build_model(self):
         self.model = self.class_model(self.dataset(), self.model_path)
-        self.model.train_model()
-        self.model.save_model()
 
     def build(self):
         self.before_build_model()

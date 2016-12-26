@@ -1,4 +1,5 @@
-from utils.env import logger
+from utils.env import logger, sc
+
 from basic.builder import MLBuilder
 from algorithm import MovieALS
 from dataset import MovieLenRatings
@@ -19,15 +20,16 @@ class MovieRCBuilder(MLBuilder):
         logger.info("refresh {} model ...".format(type(self).__name__))
 
         # algorithm
-        movie_rc_algo = MovieALS(self.dataset, {
-            'rank': 8,
-            'seed': 5,
-            'iterations': 10,
-            'regularization_parameter': 0.1,
-            'model_path': self.model_path
-        })
-        movie_rc_algo.train_model()
-        movie_rc_algo.save_model()
+        params = {'rank': 8,
+                  'seed': 5,
+                  'iterations': 10,
+                  'regularization_parameter': 0.1,
+                  'model_path': self.model_path,
+                  'sc': sc,
+                  'dataset': self.dataset
+        }
+
+        movie_rc_algo = MovieALS(params)
 
     def build_model(self):
         self.refresh_dataset()
