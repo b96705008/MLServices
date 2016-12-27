@@ -10,13 +10,12 @@ from flask import Flask
 from utils.env import root_dir, data_dir, init_spark_context, logger
 
 @click.command()
-@click.option("-c", "--config", required=True)
+@click.option("-c", "--service", required=True)
 @click.option("-f", "--func", type=click.Choice(["builder", "api"]))
 @click.option("-v", "--debug", default=False)
-def run(config, func, debug):
-    basepath = os.path.join(data_dir(), config)
+def run(service, func, debug):
+    basepath = os.path.join(data_dir(), service)
     filepath_cfg = os.path.join(basepath, "ml_service.cfg")
-    print filepath_cfg
 
     cfg = ConfigParser.RawConfigParser()
     cfg.read(filepath_cfg)
