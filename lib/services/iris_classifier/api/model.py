@@ -1,12 +1,12 @@
 import os
 import numpy as np
 
-from basic.model import MLModel
+from basic.model import MLDeepModel
 from utils.env import logger
 
 from keras.models import model_from_json
 
-class IrisModel(MLModel):
+class IrisModel(MLDeepModel):
     def load_model(self):
         logger.info("Loaded model from disk")
 

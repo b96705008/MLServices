@@ -23,16 +23,25 @@ class MLEngine(Thread):
 
         self.model = None
 
-        self.process()
+        self.process(skip_before=True, skip_after=True)
 
-    def process(self):
-        if hasattr(self.model, "before_reload_model"):
-            self.model.before_reload_model()
+    def process(self, skip_before=False, skip_after=False):
+        if not skip_before:
+            self.before_refresh_model()
 
         self.refresh_model()
 
+        if not skip_after:
+            self.after_refresh_model()
+
+    def before_refresh_model(self):
+        self.model.before_reload_model()
+
     def refresh_model(self):
         raise NotImplementedError
+
+    def after_refresh_model(self):
+        self.model.after_reload_model()
 
     def get_model(self):
         return self.model

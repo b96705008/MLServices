@@ -10,14 +10,15 @@ class MLModel(object):
         self.init(params)
 
     def load(self):
-        # assign the session to the attribute when the backend is 'tensorflow'
-        if K._BACKEND == "tensorflow":
-            self.session = tf.Session()
-            K.set_session(self.session)
-
-            logger.info("use the tensorflow to be the backend, we should set session firstly")
-
+        self.before_load_model()
         self.load_model()
+        self.after_load_model()
+
+    def before_load_model(self):
+        pass
+
+    def after_load_model(self):
+        pass
 
     def init(self, params={}):
         for k, v in params.items():
@@ -27,6 +28,21 @@ class MLModel(object):
 
     def load_model(self):
         raise NotImplementedError
+
+    def before_reload_model(self):
+        pass
+
+    def after_reload_model(self):
+        pass
+
+class MLDeepModel(MLModel):
+    def before_load_model(self):
+        # assign the session to the attribute when the backend is 'tensorflow'
+        if K._BACKEND == "tensorflow":
+            self.session = tf.Session()
+            K.set_session(self.session)
+
+            logger.info("use the tensorflow to be the backend, we should set session firstly")
 
     def before_reload_model(self):
         if K._BACKEND == "tensorflow" \
