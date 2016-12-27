@@ -17,7 +17,6 @@ def root_dir():
 def data_dir():
     return os.path.join(root_dir(), "etc")
 
-
 def nice_json(arg):
     response = make_response(json.dumps(arg, sort_keys = True, indent=4))
     response.headers['Content-type'] = "application/json"
