@@ -33,18 +33,22 @@ class MovieCFModel(MLModel):
 
         return predicted_title_rating_RDD
 
-    def get_top_ratings(self, user_id, movies_count):
+    def get_top_ratings(self, params):
         """
             Recommends up to movies_count top unrated movies to user_id
         """
         # Get pairs of (userID, movieID) for user_id unrated movies
+        user_id = params["user_id"]
+        count = params["count"]
+
+
         user_unrated_movies_RDD = self.movies_RDD \
             .filter(lambda rating: not rating[1] == user_id) \
             .map(lambda x: (user_id, x[0]))
 
         # Get predicted ratings
         ratings = self.__predict_ratings(user_unrated_movies_RDD) \
-            .takeOrdered(movies_count, key=lambda x: -x[1])
+            .takeOrdered(count, key=lambda x: -x[1])
 
         result = map(lambda x: {'movie_title': x[0], 'rating': x[1]}, ratings)
 

@@ -8,8 +8,11 @@ def get_service(engine, service_name):
     @service.route("/users/<int:user_id>/top/<int:count>", methods=['GET'])
     def top_ratings(user_id, count):
         logger.debug("User %s TOP ratings requested", user_id)
-        model = engine.get_model()
-        top_ratings = model.get_top_ratings(user_id, count)
+
+        params = {"user_id": user_id,
+                  "count": count}
+
+        top_ratings = engine.get_model().get_top_ratings(params)
 
         return nice_json(top_ratings)
 

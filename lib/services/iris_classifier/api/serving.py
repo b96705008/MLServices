@@ -11,16 +11,18 @@ def get_service(engine, service_name):
     @service.route("/features/<feature_str>/probs")
     def get_iris_probs(feature_str):
         features = parse_feature_str(feature_str)
-        dnn_clf = engine.get_model()
-        probs = dnn_clf.predict_probs(features)
+        params = {"x": features}
+
+        probs = engine.get_model().predict_probs(params)
 
         return nice_json(probs)
 
     @service.route("/features/<feature_str>/class")
     def get_iris_class(feature_str):
         features = parse_feature_str(feature_str)
-        dnn_clf = engine.get_model()
-        iris_class = dnn_clf.predict_class(features)
+        params = {"x": features}
+
+        iris_class = engine.get_model().predict_class(params)
 
         return nice_json({'iris_class': iris_class})
 
