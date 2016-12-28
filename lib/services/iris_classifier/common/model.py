@@ -32,7 +32,9 @@ class IrisModel(MLDeepModel):
     def __process_query(self, features):
         return np.array(features).reshape(-1, 4)
 
-    def predict_probs(self, features):
+    def predict_probs(self, params):
+        features = params["x"]
+
         data = self.__process_query(features)
         probs = self.model.predict(data)[0]
         result = {}
@@ -41,7 +43,9 @@ class IrisModel(MLDeepModel):
 
         return result
 
-    def predict_class(self, features):
+    def predict_class(self, params):
+        features = params["x"]
+
         data = self.__process_query(features)
         class_idx = self.model.predict_classes(data)[0]
 
