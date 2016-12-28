@@ -10,19 +10,21 @@ from flask import Flask
 from utils.env import root_dir, data_dir, init_spark_context, logger
 
 @click.command()
-@click.option("-c", "--config", required=True)
-@click.option("-s", "--service", required=True)
+@click.option("-c", "--service", required=True)
 @click.option("-f", "--func", type=click.Choice(["builder", "api"]))
 @click.option("-v", "--debug", default=False)
-def run(config, service, func, debug):
+def run(service, func, debug):
+    basepath = os.path.join(data_dir(), service)
+    filepath_cfg = os.path.join(basepath, "ml_service.cfg")
+
     cfg = ConfigParser.RawConfigParser()
-    cfg.read(config)
+    cfg.read(filepath_cfg)
 
     service_name = cfg.get("path", "location")
 
-    dataset_api_path = os.path.join(data_dir(), "datasets", cfg.get("path", "dataset_api"))
-    dataset_builder_path = os.path.join(data_dir(), "datasets", cfg.get("path", "dataset_builder"))
-    model_path = os.path.join(data_dir(), "models", cfg.get("path", "model"))
+    dataset_api_path = os.path.join(basepath, "dataset", cfg.get("path", "dataset_api"))
+    dataset_builder_path = os.path.join(basepath, "dataset", cfg.get("path", "dataset_builder"))
+    model_path = os.path.join(basepath, "model", cfg.get("path", "model"))
 
     if cfg.has_option("setting", "spark_mode") and cfg.getboolean("setting", "spark_mode"):
         init_spark_context()
