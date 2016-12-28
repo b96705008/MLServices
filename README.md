@@ -52,15 +52,15 @@
   # 3. (****) The following commands, the working space should be 'ROOT FOLDER' of this repository
 
   # == IRIS DNN classifier ==
-  python sbin/app.py --func builder --service iris
+  python sbin/app.py --func mining --service iris
   python sbin/app.py --func api --service iris
-  # redis-cli: PUBLISH iris_builder BUILD_MODEL
+  # redis-cli: PUBLISH iris_mining BUILD_MODEL
   # redis-cli: PUBLISH iris_api KILL
 
   # == MovieLens recommender ==
-  python sbin/app.py --func builder --service movielens
+  python sbin/app.py --func mining --service movielens
   python sbin/app.py --func api --service movielens
-  # redis-cli: PUBLISH movie_builder BUILD_MODEL
+  # redis-cli: PUBLISH movie_mining BUILD_MODEL
   # redis-cli: PUBLISH movie_api KILL
 ```
 * Routes
