@@ -40,7 +40,7 @@ def run(service, func, debug):
                      fromlist=["services.{}.builder".format(service_name)])
     class_algo = getattr(mod, cfg.get("class", "algorithm"))
 
-    mod = __import__("services.{}.api.model".format(service_name),
+    mod = __import__("services.{}.common.model".format(service_name),
                      fromlist=["services.{}.api".format(service_name)])
     class_model = getattr(mod, cfg.get("class", "model"))
 
