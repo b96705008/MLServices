@@ -5,9 +5,6 @@ class MLDataset(object):
     def __init__(self, dataset_path):
         self.dataset_path = dataset_path
 
-        self.X = None
-        self.Y = None
-
         self.init()
         self.prepare_data()
 
