@@ -35,10 +35,10 @@ def run(service, func, debug):
         dataset_builder_path = os.path.join(basepath, "dataset", cfg.get("path", "dataset_builder"))
 
         mod = __import__("services.{}.mining.dataset".format(service_name), fromlist=["services.{}.mining".format(service_name)])
-        class_dataset = getattr(mod, cfg.get("class", "dataset"))
+        class_dataset = getattr(mod, cfg.get("class", "dataset").capitalize())
 
         mod = __import__("services.{}.mining.algorithm".format(service_name), fromlist=["services.{}.mining".format(service_name)])
-        class_algo = getattr(mod, cfg.get("class", "algorithm"))
+        class_algo = getattr(mod, cfg.get("class", "algorithm").capitalize())
 
         channel_builder = cfg.get("channel", "mining")
         channel_api = cfg.get("channel", "api")
@@ -46,7 +46,7 @@ def run(service, func, debug):
 
         # import dynamic modules
         builder = __import__("services.{}.api.builder".format(service_name), fromlist=["services.{}.api".format(service_name)])
-        tbuilder = getattr(builder, cfg.get("class", "builder"))(class_dataset, dataset_builder_path, class_algo, model_path,\
+        tbuilder = getattr(builder, cfg.get("class", "builder").capitalize())(class_dataset, dataset_builder_path, class_algo, model_path,\
                            channels=channels, listener=listener)
         tbuilder.build()
         tbuilder.run()
@@ -56,12 +56,12 @@ def run(service, func, debug):
         channel_api = cfg.get("channel", "api")
 
         mod = __import__("services.{}.common.model".format(service_name), fromlist=["services.{}.common".format(service_name)])
-        class_model = getattr(mod, cfg.get("class", "model"))
+        class_model = getattr(mod, cfg.get("class", "model").capitalize())
 
         # import dynamic modules
         engine = __import__("services.{}.api.engine".format(service_name), fromlist=["services.{}.api".format(service_name)])
 
-        tengine = getattr(engine, cfg.get("class", "engine"))(dataset_api_path, class_model, model_path,\
+        tengine = getattr(engine, cfg.get("class", "engine").capitalize())(dataset_api_path, class_model, model_path,\
                           channel=[channel_api], listener=listener)
         tengine.start()
 

@@ -67,3 +67,6 @@
 1. http://localhost:5001/features/2,3,4,1/class
 2. http://localhost:5001/features/2,3,4,1/probs
 3. http://localhost:5002/users/1/top/10
+
+### How to start a new project
+# sbin/install.py -s testing -a install

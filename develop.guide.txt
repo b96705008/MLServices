@@ -1,0 +1,75 @@
+1. 建立 lib/services/<platform name 1>
+    lib/services/<platform name 1>/api
+        builder.py
+        engine.py
+        serving.py
+    lib/services/<platform name 1>/common
+        model.py
+    lib/services/<platform name 1>/mining
+        algorithm.py
+        dataset.py
+
+    (1) lib/services/<platform name 1>/api/builder.py
+        設定 class name (builder)
+        修改 refresh_model() 的 params
+
+    (2) lib/services/<platform name 1>/api/engine.py
+        設定 class name (engine)
+        修改 refresh_model()
+
+    (4) lib/services/<platform name 1>/common/model.py
+        設定 class name (model)
+
+    (5) lib/services/<platform name 1>/mining/algorithm.py
+        給定 class name (algorithm)
+        修改 train_data()
+        修改 save_data()
+
+    (6) lib/services/<platform name 1>/mining/dataset.py
+        給定 class name (dataset)
+        修改 init()
+        修改 prepare_data()
+
+2. 建立 etc/<platform name 2>
+    etc/<platform name 2>/data
+    etc/<platform name 2>/model
+    api.cfg
+    mining.cfg
+
+    (1) etc/<platform name 2>/mining.cfg
+        [setting]
+        spark_mode=True
+        port=5002
+
+        [class]
+        dataset=<class name (dataset)>
+        algorithm=<class name (algorithm)>
+        builder=<class name (builder)>
+
+        [path]
+        dataset_builder=.     ## 預設路徑為 etc/<platform name 2>/data (若向下仍有資料夾，則須設 dataset_builder)
+        model=.               ## 預設路徑為 etc/<platform name 2>/model (若向下仍有資料夾，則須設 model)
+        location=<platform name 1>
+
+        [channel]
+        mining=<platform name 2>_mining
+        api=<platform name 2>_api
+
+    (2) etc/<platform name 2>/api.cfg
+        [setting]
+        spark_mode=True
+        port=5002
+
+        [class]
+        engine=<class name (engine)>
+        model=<class name (model)>
+
+        [path]
+        dataset_api=.
+        model=.
+        location=<platform name 1>
+
+        [channel]
+        api=<platform name 2>_api
+
+
