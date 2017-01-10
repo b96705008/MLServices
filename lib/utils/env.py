@@ -1,5 +1,6 @@
 import os
 import json
+import subprocess
 
 from flask import make_response
 from pyspark import SparkContext, SparkConf
@@ -32,3 +33,22 @@ def init_spark_context():
     logger = sc._jvm.org.apache.log4j
     logger.LogManager.getLogger("org").setLevel(logger.Level.OFF)
     logger.LogManager.getLogger("akka").setLevel(logger.Level.OFF)
+
+def get_ip():
+    host = "127.0.0.1"
+
+    get_ip = os.path.join(root_dir(), "bin", "get_ip.sh")
+
+    ips = subprocess.check_output([get_ip], shell=True).strip().split("\n")
+    for ip in ips:
+        if not ip.startswith("127.") and not ip.startswith("192.") and not ip.startswith("10."):
+            host = ip
+            break
+        elif ip.startswith("192."):
+            host = ip
+            break
+
+    return host
+
+if __name__ == "__main__":
+    print get_ip()

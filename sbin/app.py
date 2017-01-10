@@ -1,16 +1,20 @@
 #!/usr/bin/env python
 
 import os
+import sys
+
+sys.path.append(os.path.join(os.path.dirname(__file__), "..", "lib"))
+
 import click
 import socket
 import ConfigParser
 
 from threading import Thread
 from flask import Flask
-from utils.env import root_dir, data_dir, init_spark_context, logger
+from utils.env import root_dir, data_dir, get_ip, init_spark_context, logger
 
 @click.command()
-@click.option("-c", "--service", required=True)
+@click.option("-s", "--service", required=True)
 @click.option("-f", "--func", type=click.Choice(["mining", "api"]))
 @click.option("-v", "--debug", default=False)
 def run(service, func, debug):
@@ -35,10 +39,10 @@ def run(service, func, debug):
         dataset_builder_path = os.path.join(basepath, "dataset", cfg.get("path", "dataset_builder"))
 
         mod = __import__("services.{}.mining.dataset".format(service_name), fromlist=["services.{}.mining".format(service_name)])
-        class_dataset = getattr(mod, cfg.get("class", "dataset").capitalize())
+        class_dataset = getattr(mod, cfg.get("class", "dataset"))
 
         mod = __import__("services.{}.mining.algorithm".format(service_name), fromlist=["services.{}.mining".format(service_name)])
-        class_algo = getattr(mod, cfg.get("class", "algorithm").capitalize())
+        class_algo = getattr(mod, cfg.get("class", "algorithm"))
 
         channel_builder = cfg.get("channel", "mining")
         channel_api = cfg.get("channel", "api")
@@ -46,7 +50,7 @@ def run(service, func, debug):
 
         # import dynamic modules
         builder = __import__("services.{}.api.builder".format(service_name), fromlist=["services.{}.api".format(service_name)])
-        tbuilder = getattr(builder, cfg.get("class", "builder").capitalize())(class_dataset, dataset_builder_path, class_algo, model_path,\
+        tbuilder = getattr(builder, cfg.get("class", "builder"))(class_dataset, dataset_builder_path, class_algo, model_path,\
                            channels=channels, listener=listener)
         tbuilder.build()
         tbuilder.run()
@@ -56,12 +60,12 @@ def run(service, func, debug):
         channel_api = cfg.get("channel", "api")
 
         mod = __import__("services.{}.common.model".format(service_name), fromlist=["services.{}.common".format(service_name)])
-        class_model = getattr(mod, cfg.get("class", "model").capitalize())
+        class_model = getattr(mod, cfg.get("class", "model"))
 
         # import dynamic modules
         engine = __import__("services.{}.api.engine".format(service_name), fromlist=["services.{}.api".format(service_name)])
 
-        tengine = getattr(engine, cfg.get("class", "engine").capitalize())(dataset_api_path, class_model, model_path,\
+        tengine = getattr(engine, cfg.get("class", "engine"))(dataset_api_path, class_model, model_path,\
                           channel=[channel_api], listener=listener)
         tengine.start()
 
@@ -72,7 +76,7 @@ def run(service, func, debug):
         app.register_blueprint(service)
 
         port = cfg.getint("setting", "port")
-        app.run(port=port, debug=debug)
+        app.run(host=get_ip(), port=port, debug=debug)
     else:
         raise NotImplementedError
 
