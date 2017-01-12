@@ -23,42 +23,82 @@ def sed(filepath, service, capitalize=False):
 
 @click.command()
 @click.option("-s", "--service", required=True)
+@click.option("-m", "--mode", default="single")
 @click.option("-a", "--action", type=click.Choice(["install"]))
-def main(action, service):
+def main(action, service, mode):
     basepath = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
-    template_path = os.path.join(basepath, "etc", "templates")
 
-    cfg_path = os.path.join(template_path, "cfg")
-    class_path = os.path.join(template_path, "class")
+    if mode.lower() == "single":
+        logger.info("Start single model process...")
 
-    target_cfg_path = os.path.join(basepath, "etc", service.lower())
-    target_class_path = os.path.join(basepath, "lib", "services", service.lower())
+        template_path = os.path.join(basepath, "etc", "templates", "single")
 
-    if action == "install":
-        if not os.path.exists(target_cfg_path):
-            shutil.copytree(cfg_path, target_cfg_path)
-            logger.info("copy {} to {} successfully".format(cfg_path, target_cfg_path))
-        else:
-            logger.warn("{} is NOT empty".format(target_cfg_path))
+        cfg_path = os.path.join(template_path, "cfg")
+        class_path = os.path.join(template_path, "class")
 
-        for filename in os.listdir(target_cfg_path):
-            filepath = os.path.join(target_cfg_path, filename)
-            if os.path.isfile(filepath):
-                sed(filepath, service, False)
+        target_cfg_path = os.path.join(basepath, "etc", service.lower())
+        target_class_path = os.path.join(basepath, "lib", "services", service.lower())
 
-        if not os.path.exists(target_class_path):
-            shutil.copytree(class_path, target_class_path)
-            logger.info("copy {} to {} successfully".format(class_path, target_class_path))
-        else:
-            logger.warn("{} is NOT empty".format(target_class_path))
+        if action == "install":
+            if not os.path.exists(target_cfg_path):
+                shutil.copytree(cfg_path, target_cfg_path)
+                logger.info("copy {} to {} successfully".format(cfg_path, target_cfg_path))
+            else:
+                logger.warn("{} is NOT empty".format(target_cfg_path))
 
-        for folder in ["api", "common", "mining"]:
-            for filename in os.listdir(os.path.join(target_class_path, folder)):
-                filepath = os.path.join(target_class_path, folder, filename)
+            for filename in os.listdir(target_cfg_path):
+                filepath = os.path.join(target_cfg_path, filename)
                 if os.path.isfile(filepath):
-                    sed(filepath, service, True)
+                    sed(filepath, service, False)
+
+            if not os.path.exists(target_class_path):
+                shutil.copytree(class_path, target_class_path)
+                logger.info("copy {} to {} successfully".format(class_path, target_class_path))
+            else:
+                logger.warn("{} is NOT empty".format(target_class_path))
+
+            for folder in ["api", "common", "mining"]:
+                for filename in os.listdir(os.path.join(target_class_path, folder)):
+                    filepath = os.path.join(target_class_path, folder, filename)
+                    if os.path.isfile(filepath):
+                        sed(filepath, service, False)
+        else:
+            raise NotImplementedError
     else:
-        raise NotImplementedError
+        logger.info("Start ensemble model process...")
+        template_path = os.path.join(basepath, "etc", "templates", "ensemble")
+
+        cfg_path = os.path.join(template_path, "cfg")
+        class_path = os.path.join(template_path, "class")
+
+        target_cfg_path = os.path.join(basepath, "etc", service.lower())
+        target_class_path = os.path.join(basepath, "lib", "services", service.lower())
+
+        if action == "install":
+            if not os.path.exists(target_cfg_path):
+                shutil.copytree(cfg_path, target_cfg_path)
+                logger.info("copy {} to {} successfully".format(cfg_path, target_cfg_path))
+            else:
+                logger.warn("{} is NOT empty".format(target_cfg_path))
+
+            for filename in os.listdir(target_cfg_path):
+                filepath = os.path.join(target_cfg_path, filename)
+                if os.path.isfile(filepath):
+                    sed(filepath, service, False)
+
+            if not os.path.exists(target_class_path):
+                shutil.copytree(class_path, target_class_path)
+                logger.info("copy {} to {} successfully".format(class_path, target_class_path))
+            else:
+                logger.warn("{} is NOT empty".format(target_class_path))
+
+            for folder in ["api"]:
+                for filename in os.listdir(os.path.join(target_class_path, folder)):
+                    filepath = os.path.join(target_class_path, folder, filename)
+                    if os.path.isfile(filepath):
+                        sed(filepath, service, False)
+        else:
+            raise NotImplementedError
 
 if __name__ == "__main__":
     main()
