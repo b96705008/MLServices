@@ -8,22 +8,26 @@ def get_service(service_name, engines):
     def parse_feature_str(feature_str):
         return map(lambda x: float(x), feature_str.split(","))
 
-    @service.route("/<feature>/<int:user_id>/<int:count>", methods=['GET'])
-    def hello(feature, user_id, count):
-        results = []
+    @service.route("/<string:model>/<string:user_id>/<int:count>", methods=['GET'])
+    def hello(model, user_id, count):
+        params = {"model" : model,
+                  "user_id": user_id,
+                  "count": count}
 
         for model_name, engine in engines:
-            if model_name == "iris":
-                param = {"x": parse_feature_str(feature)}
+            if model_name == "MyRewards_ALS":
+                MyRewards_ALS_result = engine.get_model().get_top_ratings(params)
+            elif model_name == "MyRewards_CB":
+                MyRewards_CB_result = engine.get_model().get_top_ratings(params)
 
-                prob = engine.get_model().predict_probs(param)
-                results.append(prob)
-            elif model_name == "movielens":
-                params = {"user_id": user_id, "count": count}
-
-                top_rating = engine.get_model().get_top_ratings(params)
-
-                results.append(top_rating)
+        if model == "ALS":
+            results = MyRewards_ALS_result
+        elif model == "CB":
+            results = MyRewards_CB_result
+        elif model == "ALL":
+            results = [MyRewards_ALS_result, MyRewards_CB_result]
+        else:
+            results = "something wrong, please check..."
 
         return nice_json(results)
 

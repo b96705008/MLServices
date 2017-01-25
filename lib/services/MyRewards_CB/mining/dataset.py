@@ -36,6 +36,7 @@ class MyRewardsCBDataset(MLDataset):
 
         customer_raw = self.sc.textFile(os.path.join(self.dataset_path, "rec_cust_base.txt"))
         customer_header = customer_raw.first()
+
         customer_rdd = customer_raw.filter(lambda x: x != customer_header) \
                                    .map(lambda x: x.split(",")) \
                                    .filter(lambda x: x[6] != "NA")
@@ -62,7 +63,6 @@ class MyRewardsCBDataset(MLDataset):
 
         all_profile = self.customer_profile.union(self.product_profile)
         all_feature = self.customer_feature.union(self.product_feature)
-
         scale_model = StandardScaler(withMean = True, withStd = True).fit(all_feature)
         scale_feature = scale_model.transform(all_feature)
 

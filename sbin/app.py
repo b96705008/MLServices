@@ -33,7 +33,7 @@ def get_api_service(cfg, service_name, tengine):
 
     return service
 
-def get_mining_engine(cfg, service_name, model_path, listener=None):
+def get_mining_engine(basepath, cfg, service_name, model_path, listener=None):
     dataset_builder_path = os.path.join(basepath, "dataset", cfg.get("path", "dataset_builder"))
 
     mod = __import__("services.{}.mining.dataset".format(service_name), fromlist=["services.{}.mining".format(service_name)])
@@ -51,7 +51,7 @@ def get_mining_engine(cfg, service_name, model_path, listener=None):
     tbuilder = getattr(builder, cfg.get("class", "builder"))(class_dataset, dataset_builder_path, class_algo, model_path,\
                        channels=channels, listener=listener)
 
-    return tbuiler
+    return tbuilder
 
 def init_setting(cfg):
     ensemble_mode = False
@@ -124,7 +124,7 @@ def run(service, func, debug):
         model_path = os.path.join(basepath, "model", cfg.get("path", "model"))
 
         if func == 'mining':
-            tbuiler = get_mining_engine(cfg, service_name, model_path, listener)
+            tbuilder = get_mining_engine(basepath, cfg, service_name, model_path, listener)
 
             tbuilder.build()
             tbuilder.run()
