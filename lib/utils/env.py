@@ -27,7 +27,8 @@ def nice_json(arg):
 def init_spark_context():
     global sc
 
-    conf = SparkConf().setAppName("ALS Service").setMaster("local[*]")
+    conf = SparkConf().setAppName("MyRewards Service").setMaster("local[*]")
+                      # .serMaster("yarn").set("saprk.driver.memory", "2G").set("spark.executor.core", "4").set("spark.executor.memory", "2G")
     sc = SparkContext(conf=conf)
 
     logger = sc._jvm.org.apache.log4j
