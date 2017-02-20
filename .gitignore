@@ -102,3 +102,4 @@ metadata
 *.rdb
 .idea
 *.pyc
+*.parquet
