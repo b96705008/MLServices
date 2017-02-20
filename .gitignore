@@ -105,7 +105,7 @@ metadata
 *.parquet*
 
 # MyRewards
-etc/MyRewards_ALS/model
-etc/MyRewards_ALS/dataset
-etc/MyRewards_CB/model
-etc/MyRewards_CB/dataset
+etc/*/model
+etc/*/dataset
+etc/*/model
+etc/*/dataset
