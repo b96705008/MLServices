@@ -22,11 +22,11 @@ class MovieSheduler(object):
 
 if __name__ == '__main__':
 	# python lib/tasks/movielens/scheduler.py
+	scheduler = MovieSheduler()
 
 	i = 0
 	while True:
 		i += 1
 		print('Ready to schedule {} times'.format(i))
-		scheduler = MovieSheduler()
 		scheduler.get_data()
 		time.sleep(20)
