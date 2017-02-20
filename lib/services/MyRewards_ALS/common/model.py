@@ -8,7 +8,7 @@ from pyspark.mllib.recommendation import MatrixFactorizationModel
 class MyRewardsALSModel(MLModel):
     def load_model(self):
         # load model
-        self.model = MatrixFactorizationModel.load(sc, os.path.join(self.model_path, "als_model"))
+        self.model = MatrixFactorizationModel.load(sc, "file:" + os.path.join(self.model_path, "als_model"))
         self.feature_total = self.model.productFeatures().count()
 
         self.__load_data()
@@ -16,11 +16,11 @@ class MyRewardsALSModel(MLModel):
     def __load_data(self):
         logger.info("Loading mapping table...")
 
-        customer_rdd = self.sc.textFile(os.path.join(self.model_path, "als_customer_map.csv"))
+        customer_rdd = self.sc.textFile("file:" + os.path.join(self.model_path, "als_customer_map.csv"))
         self.customer_dict = customer_rdd.map(lambda x: x.split(",")) \
                                          .map(lambda x: (x[0], int(x[1]))) \
                                          .collectAsMap()
-        product_rdd = self.sc.textFile(os.path.join(self.model_path, "als_feature_map.csv"))
+        product_rdd = self.sc.textFile("file:" + os.path.join(self.model_path, "als_feature_map.csv"))
         self.product_dict = product_rdd.map(lambda x: x.split(",")) \
                                        .filter(lambda x: x[0] == "product") \
                                        .map(lambda x : (int(x[2]), x[1])) \

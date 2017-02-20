@@ -4,12 +4,14 @@ import subprocess
 
 from flask import make_response
 from pyspark import SparkContext, SparkConf
+from pyspark.sql import SQLContext
 
 import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 sc = None
+sqlContext = None
 
 def root_dir():
     """ Returns root director for this project """
@@ -25,11 +27,15 @@ def nice_json(arg):
 
 
 def init_spark_context():
-    global sc
+    global sc, sqlContext
 
-    conf = SparkConf().setAppName("MyRewards Service").setMaster("local[*]")
-                      # .serMaster("yarn").set("saprk.driver.memory", "2G").set("spark.executor.core", "4").set("spark.executor.memory", "2G")
+    conf = SparkConf().setAppName("MyRewards Service").setMaster("local[*]").set("spark.sql.warehouse.dir", "spark-warehouse") \
+                      .set("spark.driver.memory", "4G")
+                      #.set("spark.executor.core", "4").set("spark.executor.memory", "2G")
+    print conf.toDebugString()
+
     sc = SparkContext(conf=conf)
+    sqlContext = SQLContext(sc)
 
     logger = sc._jvm.org.apache.log4j
     logger.LogManager.getLogger("org").setLevel(logger.Level.OFF)

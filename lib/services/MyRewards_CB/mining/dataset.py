@@ -1,28 +1,13 @@
 import os
 from basic.dataset import MLDataset
-from utils.env import logger, sc
+from utils.env import logger, sc, sqlContext, root_dir
 from pyspark.mllib.feature import StandardScaler
 from pyspark.mllib.linalg import Vectors
-
-def data_process(line):
-    feature = line[2:6] + line[7:]
-    result = [float(feature[i]) for i in range(len(feature))]
-
-    return(Vectors.dense(result))
-
-def long_to_wide (line, total):
-    info = [line[1], line[4], line[5], line[6]]
-    mcc = line[9]
-
-    result = [0] * total
-    result[int(mcc) - 1] = 1
-    result = [info, result]
-
-    return(result)
 
 class MyRewardsCBDataset(MLDataset):
     def init(self):
         self.sc = sc
+        self.sqlContext = sqlContext
 
     def prepare_data(self):
         logger.info("Prepare CB data...")
@@ -33,13 +18,32 @@ class MyRewardsCBDataset(MLDataset):
 
     def __load_data(self):
         logger.info("Loading customer data...")
+        
+        def data_process(line):
+            feature = line[2:6] + line[7:]
+            result = [float(feature[i]) for i in range(len(feature))]
 
-        customer_raw = self.sc.textFile(os.path.join(self.dataset_path, "rec_cust_base.txt"))
-        customer_header = customer_raw.first()
+            return(Vectors.dense(result))
 
-        customer_rdd = customer_raw.filter(lambda x: x != customer_header) \
-                                   .map(lambda x: x.split(",")) \
-                                   .filter(lambda x: x[6] != "NA")
+        def long_to_wide (line, total):
+            info = [line[1], line[4], line[5], line[6]]
+            mcc = line[9]
+
+            result = [0] * total
+            result[int(mcc) - 1] = 1
+            result = [info, result]
+
+            return(result)
+
+        basepath_driver = os.path.join(root_dir(), "driver")
+
+        customer_df = self.sqlContext.read.format("jdbc") \
+                          .option("driver", "com.teradata.jdbc.TeraDriver") \
+                          .option("url", self.connect_td) \
+                          .option("dbtable", "myrewards_rec_cust_base") \
+                          .load()
+        customer_rdd = customer_df.rdd.map(lambda row: [r if isinstance(r, int) or isinstance(r, float) else r.strip().encode("utf8") if r else "None" for r in row]) \
+                                      .filter(lambda x: x[6] != "None")
 
         mcc_total = len(customer_rdd.map(lambda x: x[7:]).first())
 
@@ -49,10 +53,12 @@ class MyRewardsCBDataset(MLDataset):
 
         logger.info("Loading product data...")
 
-        product_raw = self.sc.textFile(os.path.join(self.dataset_path, "product_label.txt"))
-        product_header = product_raw.first()
-        product_rdd = product_raw.filter(lambda x: x != product_header) \
-                                 .map(lambda x: x.split(","))
+        product_df = self.sqlContext.read.format("jdbc") \
+                          .option("driver", "com.teradata.jdbc.TeraDriver") \
+                          .option("url", self.connect_td) \
+                          .option("dbtable", "myrewards_rec_mmo_product") \
+                          .load()
+        product_rdd = product_df.rdd.map(lambda row: [r if isinstance(r, int) or isinstance(r, float) else r.strip().encode("utf8") if r else "None" for r in row])
 
         self.product_profile = product_rdd.map(lambda x: (x[8], "product"))
         self.product_feature = product_rdd.map(lambda x: long_to_wide(x, mcc_total)) \

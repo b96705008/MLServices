@@ -4,32 +4,32 @@ import numpy as np
 from basic.algorithm import MLAlgorithm
 from utils.env import logger
 
-def calculate_score(line, dict):
-    customer_id, customer_info = line[0], line[1]
-
-    result = []
-    for product_id, product_info in dict.items():
-        result.append((product_id, np.corrcoef([np.array(customer_info), np.array(product_info)])[0][1]))
-    result = [customer_id, result]
-
-    return(result)
-
-def sort_product_score(line):
-    customer_id, score_info = line[0], list(line[1])
-
-    score_info1 = dict(score_info[0])
-    score_info2 = dict(score_info[1])
-
-    avg_score = [(key, (value + score_info2.get(key)) / 2) for key, value in score_info1.items()]
-    sort_score = sorted(avg_score, key = lambda x: -x[1])
-
-    result = [customer_id] + [x[0] for x in sort_score]
-
-    return(result)
-
 class MyRewardsCBTrain(MLAlgorithm):
     def train_model(self):
         logger.info("Training the CB model...")
+
+        def calculate_score(line, dict):
+            customer_id, customer_info = line[0], line[1]
+
+            result = []
+            for product_id, product_info in dict.items():
+                result.append((product_id, np.corrcoef([np.array(customer_info), np.array(product_info)])[0][1]))
+            result = [customer_id, result]
+
+            return(result)
+
+        def sort_product_score(line):
+            customer_id, score_info = line[0], list(line[1])
+
+            score_info1 = dict(score_info[0])
+            score_info2 = dict(score_info[1])
+
+            avg_score = [(key, (value + score_info2.get(key)) / 2) for key, value in score_info1.items()]
+            sort_score = sorted(avg_score, key = lambda x: -x[1])
+
+            result = [customer_id] + [x[0] for x in sort_score]
+
+            return(result)
 
         product_dict = self.dataset.product_data.collectAsMap()
         bc_product_dict = self.sc.broadcast(product_dict)

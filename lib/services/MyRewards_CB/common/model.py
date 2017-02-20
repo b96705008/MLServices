@@ -3,19 +3,19 @@ import os
 from basic.model import MLModel
 from utils.env import logger, sc
 
-def split_data(line):
-    info = line.split(",")
-    cust_id, prod_list = info[0], info[1:]
-
-    result = [cust_id, prod_list]
-
-    return(result)
-
 class MyRewardsCBModel(MLModel):
     def load_model(self):
         logger.info("Loading CB model...")
 
-        load_data = self.sc.textFile(os.path.join(self.model_path, "CB_model.csv"))
+        def split_data(line):
+            info = line.split(",")
+            cust_id, prod_list = info[0], info[1:]
+
+            result = [cust_id, prod_list]
+
+            return(result)
+
+        load_data = self.sc.textFile("file:" + os.path.join(self.model_path, "CB_model.csv"))
         cb_model = load_data.map(split_data)
 
         self.cb_dict = cb_model.collectAsMap()

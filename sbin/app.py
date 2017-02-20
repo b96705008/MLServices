@@ -8,6 +8,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "..", "lib"))
 import click
 import socket
 import ConfigParser
+import jaydebeapi as jdbc
 
 from threading import Thread
 from flask import Flask
@@ -33,9 +34,8 @@ def get_api_service(cfg, service_name, tengine):
 
     return service
 
-def get_mining_engine(basepath, cfg, service_name, model_path, listener=None):
-    dataset_builder_path = os.path.join(basepath, "dataset", cfg.get("path", "dataset_builder"))
-
+def get_mining_engine(connect_td, cfg, service_name, model_path, listener=None):
+    
     mod = __import__("services.{}.mining.dataset".format(service_name), fromlist=["services.{}.mining".format(service_name)])
     class_dataset = getattr(mod, cfg.get("class", "dataset"))
 
@@ -48,7 +48,7 @@ def get_mining_engine(basepath, cfg, service_name, model_path, listener=None):
 
     # import dynamic modules
     builder = __import__("services.{}.api.builder".format(service_name), fromlist=["services.{}.api".format(service_name)])
-    tbuilder = getattr(builder, cfg.get("class", "builder"))(class_dataset, dataset_builder_path, class_algo, model_path,\
+    tbuilder = getattr(builder, cfg.get("class", "builder"))(class_dataset, connect_td, class_algo, model_path,\
                        channels=channels, listener=listener)
 
     return tbuilder
@@ -79,11 +79,12 @@ def run(service, func, debug):
     basepath = os.path.join(data_dir(), service)
     filepath_cfg = os.path.join(basepath, "{}.cfg".format(func))
 
+    connect_td = "jdbc:teradata://<database_ip>/TMODE=TERA,CLIENT_CHARSET=WINDOWS-950,DATABASE=fh_temp,USER=<account>,PASSWORD=<password>"
+
     cfg = ConfigParser.RawConfigParser()
     cfg.read(filepath_cfg)
 
     ensemble_mode, service_name, port = init_setting(cfg)
-
     if cfg.has_option("setting", "spark_mode") and cfg.getboolean("setting", "spark_mode"):
         init_spark_context()
         logger.info("Turn on the spark_mode")
@@ -102,8 +103,10 @@ def run(service, func, debug):
 
                 _, t_service_name, port = init_setting(cfg_tmp)
                 t_basepath = os.path.join(data_dir(), t_service_name)
+                print t_basepath
 
                 t_model_path = os.path.join(t_basepath, "model", cfg_tmp.get("path", "model"))
+                print t_model_path
 
                 t_engine = get_api_engine(t_basepath, cfg_tmp, t_service_name, t_model_path)
                 t_engine.start()
@@ -124,8 +127,7 @@ def run(service, func, debug):
         model_path = os.path.join(basepath, "model", cfg.get("path", "model"))
 
         if func == 'mining':
-            tbuilder = get_mining_engine(basepath, cfg, service_name, model_path, listener)
-
+            tbuilder = get_mining_engine(connect_td, cfg, service_name, model_path, listener)
             tbuilder.build()
             tbuilder.run()
 

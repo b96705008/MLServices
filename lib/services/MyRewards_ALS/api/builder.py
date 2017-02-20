@@ -9,7 +9,7 @@ class MyRewarsALSBuilder(MLBuilder):
 
         # dataset
         if new_dataset is None:
-            self.dataset = self.class_dataset(self.dataset_path)
+            self.dataset = self.class_dataset(self.connect_td)
         else:
             self.dataset = new_dataset
 

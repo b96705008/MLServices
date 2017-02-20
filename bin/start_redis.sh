@@ -7,9 +7,10 @@ LIB_REDIS=${BASEPATH}/etc/redis
 CONF_REDIS=ml_service.conf
 
 # Export PYTHONPATH
-export PYTHONPATH=$PYTHONPATH:${LIB_PYTHON}
-# export PYTHONPATH=$PYTHONPATH:/opt/spark-2.1.0-bin-hadoop2.6/python
-# export HADOOP_CONF_DIR=/etc/hadoop/conf
+# export PYTHONPATH=$PYTHONPATH:${LIB_PYTHON}
+export PYTHONPATH=$PYTHONPATH:/opt/spark-2.1.0-bin-hadoop2.6/python
+export HADOOP_CONF_DIR=/etc/hadoop/conf
+export SPARK_CLASSPATH=${BASEPATH}/driver/terajdbc4.jar:${BASEPATH}/driver/tdgssconfig.jar
 
 # Start the redis server
 PID_FILE_REDIS=$(grep "pidfile" ${LIB_REDIS}/${CONF_REDIS} | awk '{print $2}')

@@ -3,12 +3,12 @@ from event import EVENT_KILL, EVENT_NEW, EVENT_TRAIN
 from utils.env import logger
 
 class MLBuilder(object):
-    def __init__(self, class_dataset, dataset_path, class_model, model_path, channels=[[], []], listener=None):
+    def __init__(self, class_dataset, connect_td, class_model, model_path, channels=[[], []], listener=None):
         self.class_model = class_model
         self.model_path = model_path
 
         self.class_dataset = class_dataset
-        self.dataset_path = dataset_path
+        self.connect_td = connect_td
 
         logger.info("Apply model_class is {}, dataset_class is {}".format(self.class_model, self.class_dataset))
 
@@ -21,7 +21,7 @@ class MLBuilder(object):
             self.listener = listener
 
     def dataset(self):
-        return self.class_dataset(self.dataset_path)
+        return self.class_dataset(self.connect_td)
 
     def build_model(self):
         params = {"dataset": self.dataset(),

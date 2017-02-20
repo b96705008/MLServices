@@ -22,10 +22,9 @@ class MyRewardsALSTrain(MLAlgorithm):
         except Exception:
             pass
 
-        self.model.save(self.sc, os.path.join(self.model_path, "als_model"))
+        self.model.save(self.sc, "file:" + os.path.join(self.model_path, "als_model"))
 
         logger.info("Saving rating data and mapping table...")
-
         with open(os.path.join(self.model_path, "als_customer_map.csv"), "w") as f:
             output = csv.writer(f)
             output.writerows(self.dataset.customer_map.items())
