@@ -21,7 +21,7 @@ class MovieSheduler(object):
 	
 
 if __name__ == '__main__':
-	# python lib/tasks/scheduler.py
+	# python lib/tasks/movielens/scheduler.py
 
 	i = 0
 	while True:
